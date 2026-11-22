@@ -57,6 +57,16 @@ Django then serves the built app itself at http://localhost:8000 (assets under `
 `DJANGO_SSL_REDIRECT=true` and `DJANGO_HSTS_SECONDS`, then run `python manage.py collectstatic` and serve
 `config.wsgi` with a WSGI server (gunicorn / waitress).
 
+### Deploy the frontend to Cloudflare Pages
+
+The repo is ready to build from Git on Cloudflare Pages (config lives in `package.json`, `.node-version` and `wrangler.toml`):
+
+- **Framework preset:** None · **Build command:** `npm run build` · **Build output directory:** `frontend/dist` · **Root directory:** leave empty.
+- **Variable:** `BACKEND_URL` = the public URL of your deployed Django backend (e.g. `https://orbit-api.example.com`).
+  Cloudflare can't run Django, so host the backend elsewhere (Render, Railway, a VPS…).
+  `functions/` proxies `/api/*` and `/admin/*` to it, so the app stays same-origin and session + CSRF cookies keep working.
+- On the backend, add your Pages domain to `DJANGO_CSRF_TRUSTED_ORIGINS` (e.g. `https://orbit.pages.dev`) and the backend's own host to `DJANGO_ALLOWED_HOSTS`.
+
 ### Tests
 
 ```powershell

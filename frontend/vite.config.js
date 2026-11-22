@@ -2,9 +2,14 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// In production Django serves the build: assets live under /static/.
+// Asset base for production builds:
+// - Cloudflare Pages (sets CF_PAGES automatically) serves dist/ at the site root -> "/".
+// - Otherwise Django serves the build, with assets under /static/.
+// VITE_BASE overrides both.
+const buildBase = process.env.VITE_BASE || (process.env.CF_PAGES ? '/' : '/static/')
+
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/static/' : '/',
+  base: command === 'build' ? buildBase : '/',
   plugins: [react(), tailwindcss()],
   server: {
     port: 5173,

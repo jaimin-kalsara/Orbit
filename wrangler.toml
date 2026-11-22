@@ -1,0 +1,7 @@
+# Cloudflare Pages config (read automatically when building from Git).
+name = "orbit"
+compatibility_date = "2026-11-01"
+pages_build_output_dir = "frontend/dist"
+
+# Set BACKEND_URL (your deployed Django origin, e.g. https://orbit-api.onrender.com)
+# in Pages > Settings > Variables and Secrets. /api/* and /admin/* are proxied to it.

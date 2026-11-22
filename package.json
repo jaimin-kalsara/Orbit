@@ -1,0 +1,12 @@
+{
+  "name": "orbit",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Root build entry for Cloudflare Pages: installs and builds the Vite app in frontend/.",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "npm --prefix frontend ci && npm --prefix frontend run build"
+  }
+}
