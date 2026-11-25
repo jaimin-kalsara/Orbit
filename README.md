@@ -57,15 +57,19 @@ Django then serves the built app itself at http://localhost:8000 (assets under `
 `DJANGO_SSL_REDIRECT=true` and `DJANGO_HSTS_SECONDS`, then run `python manage.py collectstatic` and serve
 `config.wsgi` with a WSGI server (gunicorn / waitress).
 
-### Deploy the frontend to Cloudflare Pages
+### Deploy the frontend to Cloudflare Workers (free plan)
 
-The repo is ready to build from Git on Cloudflare Pages (config lives in `package.json`, `.node-version` and `wrangler.toml`):
+The repo deploys from GitHub with Cloudflare **Workers Builds** (Workers & Pages → Create → Import a repository).
+Config lives in `wrangler.toml`, `package.json` and `.node-version`:
 
-- **Framework preset:** None · **Build command:** `npm run build` · **Build output directory:** `frontend/dist` · **Root directory:** leave empty.
-- **Variable:** `BACKEND_URL` = the public URL of your deployed Django backend (e.g. `https://orbit-api.example.com`).
-  Cloudflare can't run Django, so host the backend elsewhere (Render, Railway, a VPS…).
-  `functions/` proxies `/api/*` and `/admin/*` to it, so the app stays same-origin and session + CSRF cookies keep working.
-- On the backend, add your Pages domain to `DJANGO_CSRF_TRUSTED_ORIGINS` (e.g. `https://orbit.pages.dev`) and the backend's own host to `DJANGO_ALLOWED_HOSTS`.
+- **Project name:** `orbit` (must match `name` in `wrangler.toml`) · **Build command:** leave empty · **Deploy command:** `npx wrangler deploy` (the default) · **Root directory:** `/`.
+  `wrangler deploy` builds the React app itself (`[build]` in `wrangler.toml`) and uploads `frontend/dist` as static assets.
+- **Variable:** in the Worker's Settings → Variables and Secrets, add `BACKEND_URL` = the public URL of your deployed Django backend
+  (e.g. `https://orbit-api.example.com`). Cloudflare can't run Django, so host the backend elsewhere (Render, Railway, a VPS…).
+  `cloudflare/worker.js` proxies `/api/*`, `/admin/*` and `/static/*` to it, so the app stays same-origin and session + CSRF cookies keep working.
+  Without `BACKEND_URL` the app loads but every API call returns 503.
+- On the backend, add your Worker URL to `DJANGO_CSRF_TRUSTED_ORIGINS` (e.g. `https://orbit.<your-subdomain>.workers.dev`) and the backend's own host to `DJANGO_ALLOWED_HOSTS`.
+- Local check: `npm install` at the repo root, then `npm run dev` (Worker on http://localhost:8787) or `npm run deploy`.
 
 ### Tests
 

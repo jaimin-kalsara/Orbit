@@ -2,11 +2,16 @@
   "name": "orbit",
   "private": true,
   "version": "1.0.0",
-  "description": "Root build entry for Cloudflare Pages: installs and builds the Vite app in frontend/.",
+  "description": "Root entry for Cloudflare Workers: builds the Vite app in frontend/ and deploys it with wrangler.",
   "engines": {
     "node": ">=22.12"
   },
   "scripts": {
-    "build": "npm --prefix frontend ci && npm --prefix frontend run build"
+    "build": "npm --prefix frontend ci && npm --prefix frontend run build -- --base=/",
+    "dev": "node node_modules/wrangler/bin/wrangler.js dev",
+    "deploy": "node node_modules/wrangler/bin/wrangler.js deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.168.0"
   }
 }

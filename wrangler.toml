@@ -1,7 +1,18 @@
-# Cloudflare Pages config (read automatically when building from Git).
+# Cloudflare Workers config (Workers Builds runs `npx wrangler deploy` from the repo root).
 name = "orbit"
+main = "cloudflare/worker.js"
 compatibility_date = "2026-11-01"
-pages_build_output_dir = "frontend/dist"
 
-# Set BACKEND_URL (your deployed Django origin, e.g. https://orbit-api.onrender.com)
-# in Pages > Settings > Variables and Secrets. /api/* and /admin/* are proxied to it.
+# Keep variables set in the dashboard (BACKEND_URL) instead of wiping them on every deploy.
+keep_vars = true
+
+# `wrangler deploy` builds the React app first, so no separate build command is needed.
+[build]
+command = "npm run build"
+
+[assets]
+directory = "frontend/dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+# These paths go to the Worker, which proxies them to the Django backend (BACKEND_URL).
+run_worker_first = ["/api/*", "/admin", "/admin/*", "/static/*"]

@@ -9,9 +9,11 @@ backend/staticfiles/
 backend/.env
 .env
 
-# Frontend
-frontend/node_modules/
+# Frontend / Cloudflare
+node_modules/
 frontend/dist/
+.wrangler/
+.dev.vars
 
 # OS / editor
 .DS_Store
