@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // Asset base for production builds: Django serves the build with assets under /static/.
-// The Cloudflare build (root `npm run build`) passes `--base=/` instead. VITE_BASE overrides.
+// VITE_BASE overrides.
 const buildBase = process.env.VITE_BASE || '/static/'
 
 export default defineConfig(({ command }) => ({
