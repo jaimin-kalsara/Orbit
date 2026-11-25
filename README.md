@@ -57,6 +57,17 @@ Django then serves the built app itself at http://localhost:8000 (assets under `
 `DJANGO_SSL_REDIRECT=true` and `DJANGO_HSTS_SECONDS`, then run `python manage.py collectstatic` and serve
 `config.wsgi` with a WSGI server (gunicorn / waitress).
 
+### Deploy the backend to Render
+
+Create a **Web Service** from this repo with:
+
+- **Build command:** `pip install -r backend/requirements.txt && python backend/manage.py collectstatic --noinput`
+- **Start command:** `cd backend && python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT`
+- **Environment:** `DJANGO_DEBUG=false`, `DJANGO_SECRET_KEY` (long random string), `DATABASE_URL` (your Postgres URL, e.g. from Neon),
+  `DB_SSL_REQUIRE=true`, `DJANGO_ALLOWED_HOSTS=<service>.onrender.com`, `DJANGO_CSRF_TRUSTED_ORIGINS=https://<your-worker>.workers.dev`.
+
+The start command exits immediately if `DATABASE_URL` is missing or the database can't be reached.
+
 ### Deploy the frontend to Cloudflare Workers (free plan)
 
 The repo deploys from GitHub with Cloudflare **Workers Builds** (Workers & Pages → Create → Import a repository).
